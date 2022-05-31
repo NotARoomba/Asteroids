@@ -3,8 +3,8 @@
 #include <math.h>
 #include <vector>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+int SCREEN_WIDTH = 800;
+int SCREEN_HEIGHT = 600;
 struct {
 	float x = SCREEN_WIDTH / 2;
 	float y = SCREEN_HEIGHT / 2;
@@ -14,52 +14,89 @@ struct {
 	float speed = .05;
 	
 } ship;
-SDL_FPoint rotateShip(int x, int y, int cx, int cy, int angle)
+struct {
+	float x = SCREEN_WIDTH / 2;
+	float y = SCREEN_HEIGHT / 2;
+	float angle = 0;
+	float xVel = 0;
+	float yVel = 0;
+	float speed = .05;
+
+} asteroid;
+SDL_FPoint rotatePoint(int x, int y, int cx, int cy, int angle)
 {
 	int x2 = cx + ((x - cx) * cos(angle * M_PI / 180)) - ((cy - y) * sin(angle * M_PI / 180));
 	int y2 = cy + ((cy - y) * cos(angle * M_PI / 180)) + ((x - cx) * sin(angle * M_PI / 180));
 	SDL_FPoint coords = { x2, y2 };
 	return coords;
 };
-
+SDL_FPoint drawAsteroid(SDL_Renderer* renderer, float x, float y, float rotation) {
+	//SDL_FPoint points[]
+}
 SDL_FPoint drawShip(SDL_Renderer* renderer, float x, float y, float rotation) {
 	SDL_FPoint points[5] = {
 		//tip
 		{x, y},
 		//right wing point
-	  rotateShip(x + 8, y - 30, x, y, rotation),
+	  rotatePoint(x + 8, y - 30, x, y, rotation),
 	//middle
-		rotateShip(x, y - 20, x, y, rotation),
+		rotatePoint(x, y - 20, x, y, rotation),
 		//left wind point
-	  rotateShip(x - 8, y - 30, x, y,rotation),
+	  rotatePoint(x - 8, y - 30, x, y,rotation),
 	  //tip
 	  {x, y}
 	};
-	//SDL_FPoint altPoints[5] = { points[0], points[1], points[2], points[3], points[4] };
+	SDL_FPoint altPoints[5] = {points[0], points[1], points[2], points[3], points[4]};
 	for (int i = 0; i < 5; i++) {
-		//std::cout << points[i].x << " " << points[i].y << std::endl;
 		if (points[i].x < 0.0f) {
-			points[i].x = (float)SCREEN_WIDTH + points[i].x;
+			altPoints[i].x = (float)SCREEN_WIDTH + points[i].x;
+			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
+			for (int i = 0; i < 5; i++)
+			{
+				altPoints[i].x = points[i].x - diff[0];
+				altPoints[i].y = points[i].y - diff[1];
+			}
 		}
 		if (points[i].x > (float)SCREEN_WIDTH) {
-			points[i].x = points[i].x - (float)SCREEN_WIDTH;
+			altPoints[i].x = points[i].x - (float)SCREEN_WIDTH;
+			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
+			for (int i = 0; i < 5; i++)
+			{
+				altPoints[i].x = points[i].x - diff[0];
+				altPoints[i].y = points[i].y - diff[1];
+			}
 		}
 		if (points[i].y < 0.0f) {
-			points[i].y = (float)SCREEN_HEIGHT + points[i].y;
+			altPoints[i].y = (float)SCREEN_HEIGHT + points[i].y;
+			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
+			for (int i = 0; i < 5; i++)
+			{
+				altPoints[i].x = points[i].x - diff[0];
+				altPoints[i].y = points[i].y - diff[1];
+			}
 		}
 		if (points[i].y > (float)SCREEN_HEIGHT) {
-			points[i].y = points[i].y - (float)SCREEN_HEIGHT;
+			altPoints[i].y = points[i].y - (float)SCREEN_HEIGHT;
+			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
+			for (int i = 0; i < 5; i++)
+			{
+				altPoints[i].x = points[i].x - diff[0];
+				altPoints[i].y = points[i].y - diff[1];
+			}
+			std::cout << altPoints[i].y << std::endl;
 		}
+		
 	}
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 	SDL_RenderDrawLinesF(renderer, points, 5);
-	return points[0];
+	SDL_RenderDrawLinesF(renderer, altPoints, 5);
+	return points[0].x < 0.0f || points[0].x > (float)SCREEN_WIDTH || points[0].y < 0.0f || points[0].y > (float)SCREEN_HEIGHT ? altPoints[0] : points[0];
 };
 int main(int argc, char** argv)
 {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Window* window = SDL_CreateWindow("Asteroids", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT,SDL_WINDOW_RESIZABLE);
-   SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	bool done = false;
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
     while (!done) {
@@ -73,6 +110,12 @@ int main(int argc, char** argv)
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				done = true;
+			}
+			if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+				SCREEN_WIDTH = event.window.data1;
+				SCREEN_HEIGHT = event.window.data2;
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+				SDL_RenderClear(renderer);
 			}
 		}
 		SDL_PumpEvents();
