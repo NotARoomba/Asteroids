@@ -5,20 +5,22 @@
 #include <stdlib.h>
 #include <time.h> 
 
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 600;
+int screenWidth = 800;
+int screenHeight = 600;
+
+
 struct {
-	float x = SCREEN_WIDTH / 2;
-	float y = SCREEN_HEIGHT / 2;
+	float x = screenWidth / 2;
+	float y = screenHeight / 2;
 	float angle = 0;
 	float xVel = 0;
 	float yVel = 0;
 	float speed = .05;
-	
+	std::vector<SDL_FPoint> shipPoints;
 } ship;
 struct asteroid {
-	float x = SCREEN_WIDTH / 2;
-	float y = SCREEN_HEIGHT / 2;
+	float x = screenWidth / 2;
+	float y = screenHeight / 2;
 	float angle = 0;
 	float xVel = 0;
 	float yVel = 0;
@@ -34,158 +36,220 @@ struct asteroid {
 		this->size = size;
 	}
 };
-SDL_FPoint rotatePointAndScale(int x, int y, int cx, int cy, int angle, int scale)
+struct bullet {
+	float x = ship.x;
+	float y = ship.y;
+	float xVel = 0;
+	float yVel = 0;
+	bullet(float x, float y, float angle, float xVel, float yVel) {
+		this->x = x;
+		this->y = y;
+		this->xVel = xVel;
+		this->yVel = yVel;
+	}
+};
+
+std::vector<asteroid> asteroids;
+std::vector<bullet> bullets;
+bool done = false;
+int score, level = 0;
+
+std::vector<SDL_FPoint> rotatePointsAndScale(std::vector<SDL_FPoint> points, float angle, int scale = 1)
 {
-	int x2 = cx + (((x - cx) * scale) * cos(angle * M_PI / 180)) - (((cy - y) * scale) * sin(angle * M_PI / 180));
-	int y2 = cy + (((cy - y) * scale) * cos(angle * M_PI / 180)) + (((x - cx) * scale) * sin(angle * M_PI / 180));
-	SDL_FPoint coords = { x2, y2 };
-	return coords;
-};
-SDL_FPoint drawAsteroid(SDL_Renderer* renderer, float x, float y, float rotation, int scale) {
-	SDL_FPoint points[17] = { rotatePointAndScale(x, y, x, y, rotation, scale),rotatePointAndScale(x + 2, y - 1,x, y, rotation, scale),rotatePointAndScale(x + 3, y + 1,x, y, rotation, scale),rotatePointAndScale(x + 4, y + 3,x, y, rotation, scale),rotatePointAndScale(x + 2, y + 5,x, y, rotation, scale),rotatePointAndScale(x + 2, y + 6,x, y, rotation, scale),rotatePointAndScale(x + 3, y + 7,x, y, rotation, scale),rotatePointAndScale(x - 1, y + 9,x, y, rotation, scale),rotatePointAndScale(x - 3, y + 7,x, y, rotation, scale),rotatePointAndScale(x - 4, y + 8,x, y, rotation, scale),rotatePointAndScale(x - 6, y + 7,x, y, rotation, scale),rotatePointAndScale(x - 6, y + 4,x, y, rotation, scale),rotatePointAndScale(x - 5, y + 2,x, y, rotation, scale),rotatePointAndScale(x - 5, y - 0,x, y, rotation, scale),rotatePointAndScale(x - 3, y + 1,x, y, rotation, scale),rotatePointAndScale(x - 3, y - 1, x, y, rotation, scale),rotatePointAndScale(x, y, x, y, rotation, scale) };
-
-	SDL_FPoint altPoints[17] = {points[0], points[1], points[2], points[3], points[4], points[5], points[6], points[7], points[8], points[9], points[10], points[11], points[12], points[13], points[14], points[15], points[16]};
-	for (int i = 0; i < 5; i++) {
-		if (points[i].x < 0.0f) {
-			altPoints[i].x = (float)SCREEN_WIDTH + points[i].x;
-			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
-			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
-			}
-		}
-		if (points[i].x > (float)SCREEN_WIDTH) {
-			altPoints[i].x = points[i].x - (float)SCREEN_WIDTH;
-			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
-			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
-			}
-		}
-		if (points[i].y < 0.0f) {
-			altPoints[i].y = (float)SCREEN_HEIGHT + points[i].y;
-			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
-			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
-			}
-		}
-		if (points[i].y > (float)SCREEN_HEIGHT) {
-			altPoints[i].y = points[i].y - (float)SCREEN_HEIGHT;
-			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
-			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
-			}
-			std::cout << altPoints[i].y << std::endl;
-		}
-
+	std::vector<SDL_FPoint> newPoints;
+	float cx = points[0].x;
+	float cy = points[0].y;
+	for (int i = 1; i < points.size()-1; i++)
+	{
+		float x = points[i].x;
+		float y = points[i].y;
+		float x2 = cx + (((x - cx) * scale) * cos(angle * M_PI / 180)) - (((cy - y) * scale) * sin(angle * M_PI / 180));
+		float y2 = cy + (((cy - y) * scale) * cos(angle * M_PI / 180)) + (((x - cx) * scale) * sin(angle * M_PI / 180));
+		points[i] = {x2, y2};
 	}
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	SDL_RenderDrawLinesF(renderer, points, 17);
-	SDL_RenderDrawLinesF(renderer, altPoints, 17);
-	return points[0].x < 0.0f || points[0].x >(float)SCREEN_WIDTH || points[0].y < 0.0f || points[0].y >(float)SCREEN_HEIGHT ? altPoints[0] : points[0];
+	return points;
+};
+//check if point is inside polygon
+bool checkifPointIsInsidePolygon(SDL_FPoint point, std::vector<SDL_FPoint> pointsOfPolygon) {
+	int i, j = 0;
+	bool c = false;
+	for (i = 0, j = pointsOfPolygon.size() - 1; i < pointsOfPolygon.size(); j = i++) {
+		if (((pointsOfPolygon[i].y > point.y) != (pointsOfPolygon[j].y > point.y)) &&
+			(point.x < (pointsOfPolygon[j].x - pointsOfPolygon[i].x) * (point.y - pointsOfPolygon[i].y) / (pointsOfPolygon[j].y - pointsOfPolygon[i].y) + pointsOfPolygon[i].x))
+			c = !c;
+	}
+	return c;
 }
-SDL_FPoint drawShip(SDL_Renderer* renderer, float x, float y, float rotation) {
-	SDL_FPoint points[5] = {
-		//tip
-		{x, y},
-		//right wing point
-	  rotatePointAndScale(x + 8, y - 30, x, y, rotation, 1),
-	//middle
-		rotatePointAndScale(x, y - 20, x, y, rotation, 1),
-		//left wind point
-	  rotatePointAndScale(x - 8, y - 30, x, y,rotation, 1),
-	  //tip
-	  {x, y}
-	};
-	SDL_FPoint altPoints[5] = {points[0], points[1], points[2], points[3], points[4]};
-	for (int i = 0; i < 5; i++) {
+
+float generateRandom(float min, float max) {
+	if (min > max)
+	{
+		std::swap(min, max);
+	}
+	return min + (float)rand() * (max - min) / (float)RAND_MAX;
+}
+
+void makeCopy(std::vector<SDL_FPoint>& points, std::vector<SDL_FPoint>& altPoints) {
+	for (int i = 0; i < points.size(); i++) {
 		if (points[i].x < 0.0f) {
-			altPoints[i].x = (float)SCREEN_WIDTH + points[i].x;
+			altPoints[i].x = (float)screenWidth + points[i].x;
 			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
+			for (int j = 0; j < points.size(); j++)
 			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
+				altPoints[j].x = points[j].x - diff[0];
+				altPoints[j].y = points[j].y - diff[1];
 			}
 		}
-		if (points[i].x > (float)SCREEN_WIDTH) {
-			altPoints[i].x = points[i].x - (float)SCREEN_WIDTH;
+		if (points[i].x > (float)screenWidth) {
+			altPoints[i].x = points[i].x - (float)screenWidth;
 			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
+			for (int j = 0; j < points.size(); j++)
 			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
+				altPoints[j].x = points[j].x - diff[0];
+				altPoints[j].y = points[j].y - diff[1];
 			}
 		}
 		if (points[i].y < 0.0f) {
-			altPoints[i].y = (float)SCREEN_HEIGHT + points[i].y;
+			altPoints[i].y = (float)screenHeight + points[i].y;
 			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
+			for (int j = 0; j < points.size(); j++)
 			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
+				altPoints[j].x = points[j].x - diff[0];
+				altPoints[j].y = points[j].y - diff[1];
 			}
 		}
-		if (points[i].y > (float)SCREEN_HEIGHT) {
-			altPoints[i].y = points[i].y - (float)SCREEN_HEIGHT;
+		if (points[i].y > (float)screenHeight) {
+			altPoints[i].y = points[i].y - (float)screenHeight;
 			float diff[2] = { points[i].x - altPoints[i].x, points[i].y - altPoints[i].y };
-			for (int i = 0; i < 5; i++)
+			for (int j = 0; j < points.size(); j++)
 			{
-				altPoints[i].x = points[i].x - diff[0];
-				altPoints[i].y = points[i].y - diff[1];
+				altPoints[j].x = points[j].x - diff[0];
+				altPoints[j].y = points[j].y - diff[1];
 			}
-			std::cout << altPoints[i].y << std::endl;
 		}
-		
+
 	}
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-	SDL_RenderDrawLinesF(renderer, points, 5);
-	SDL_RenderDrawLinesF(renderer, altPoints, 5);
-	return points[0].x < 0.0f || points[0].x > (float)SCREEN_WIDTH || points[0].y < 0.0f || points[0].y > (float)SCREEN_HEIGHT ? altPoints[0] : points[0];
+}
+void drawAsteroid(SDL_Renderer* renderer) {
+	for (int k = 0; k < asteroids.size(); k++) {
+		asteroids[k].x += asteroids[k].xVel;
+		asteroids[k].y += asteroids[k].yVel;
+		float x = asteroids[k].x;
+		float y = asteroids[k].y;
+		float rotation = asteroids[k].angle;
+		int scale = asteroids[k].size;
+		std::vector<SDL_FPoint> points = rotatePointsAndScale({ {x, y}, {x + 2, y - 1}, {x + 3, y + 1}, {x + 4, y + 3}, {x + 2, y + 5}, {x + 2, y + 6}, {x + 3, y + 7}, {x - 1, y + 9}, {x - 3, y + 7}, {x - 4, y + 8}, {x - 6, y + 7}, {x - 6, y + 4}, {x - 5, y + 2}, {x - 5, y - 0}, {x - 3, y + 1}, {x - 3, y - 1}, {x, y} }, rotation, scale);
+		std::vector<SDL_FPoint> altPoints = points;
+		makeCopy(points, altPoints);
+		bool skip = false;
+		for (int l = 0; l < bullets.size(); l++) {
+			if (checkifPointIsInsidePolygon({ bullets[l].x, bullets[l].y }, points) || checkifPointIsInsidePolygon({ bullets[l].x, bullets[l].y }, altPoints)) {
+				bullets.erase(bullets.begin() + l);
+				if (asteroids[k].size > 3) {
+					asteroids.emplace_back(asteroids[k].x, asteroids[k].y, asteroids[k].angle, generateRandom(-1, 1), generateRandom(-1, 1), asteroids[k].size / 2);
+					asteroids.emplace_back(asteroids[k].x, asteroids[k].y, asteroids[k].angle, generateRandom(-1, 1), generateRandom(-1, 1), asteroids[k].size / 2);
+				}
+				asteroids.erase(asteroids.begin() + k);
+				score++;
+				std::cout << "Score: " << score << std::endl;
+				skip = true;
+				break;
+			}
+		};
+		if (skip) continue;
+		for (int l = 0; l < ship.shipPoints.size(); l++) {
+			if (checkifPointIsInsidePolygon({ ship.shipPoints[l].x, ship.shipPoints[l].y }, points) || checkifPointIsInsidePolygon({ ship.shipPoints[l].x, ship.shipPoints[l].y }, altPoints)) {
+				done = true;
+			}
+		};
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+		SDL_RenderDrawLinesF(renderer, &points[0], 17);
+		SDL_RenderDrawLinesF(renderer, &altPoints[0], 17);
+		asteroids[k].x = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].x : points[0].x;
+		asteroids[k].y = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].y : points[0].y;
+	}
 };
+SDL_FPoint drawShip(SDL_Renderer* renderer) {
+	ship.xVel = ship.xVel > 1 ? 1 : ship.xVel < -1 ? -1 : ship.xVel;
+	ship.yVel = ship.yVel > 1 ? 1 : ship.yVel < -1 ? -1 : ship.yVel;
+	float x = ship.x += ship.xVel;
+	float y = ship.y += ship.yVel;
+	std::vector<SDL_FPoint> points = rotatePointsAndScale({{x, y}, {x + 8, y - 30}, {x, y - 20}, {x - 8, y - 30}, {x, y} }, ship.angle);
+	std::vector<SDL_FPoint> altPoints;
+	altPoints = ship.shipPoints = points;
+	makeCopy(points, altPoints);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawLinesF(renderer, &points[0], 5);
+	SDL_RenderDrawLinesF(renderer, &altPoints[0], 5);
+	ship.x = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].x : points[0].x;
+	ship.y = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].y : points[0].y;
+};
+void drawBullets(SDL_Renderer* renderer) {
+	for (int i = 0; i < bullets.size(); i++) {
+		bullets[i].x += bullets[i].xVel;
+		bullets[i].y += bullets[i].yVel;
+		std::vector<SDL_FPoint> points = {
+			{ bullets[i].x, bullets[i].y },
+			{ bullets[i].x + 2, bullets[i].y },
+			{ bullets[i].x + 2, bullets[i].y + 2 },
+			{bullets [i].x, bullets[i].y + 2 },
+			{ bullets[i].x, bullets[i].y }
+		};
+		//std::vector<SDL_FPoint> altPoints = points;
+		//makeCopy(points, altPoints);
+		for (int j = 0; j < 5; j++) {
+			if (points[j].x < 0.0f || points[j].x > (float)screenWidth || points[j].y < 0.0f || points[j].y > (float)screenHeight) {
+				bullets.erase(bullets.begin() + i);
+				break;
+			}
+		}
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+	SDL_RenderDrawLinesF(renderer, &points[0], 5);
+	//SDL_RenderDrawLinesF(renderer, &altPoints[0], 5);
+	//bullets[i].x = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].x : points[0].x;
+	//bullets[i].y = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].y : points[0].y;
+	}
+}
 int main(int argc, char** argv)
 {
 	srand(time(NULL));
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("Asteroids", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT,SDL_WINDOW_RESIZABLE);
+    SDL_Window* window = SDL_CreateWindow("Asteroids", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight,SDL_WINDOW_RESIZABLE);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	bool done = false;
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
-	int score = 0;
-	std::vector<asteroid> asteroids;
-	asteroids.emplace_back(100.0, 100.0, rand() % 361, ((float)rand()) / ((float)RAND_MAX) * 2, ((float)rand()) / ((float)RAND_MAX) * 1, 10);
-	asteroids.emplace_back(100.0,SCREEN_HEIGHT-100.0, rand() % 361, ((float)rand()) / ((float)RAND_MAX) * 2, ((float)rand()) / ((float)RAND_MAX) * 2, 10);
-	asteroids.emplace_back(SCREEN_WIDTH-100.0, 100.0, rand() % 361, ((float)rand()) / ((float)RAND_MAX) * 2, ((float)rand()) / ((float)RAND_MAX) * 2, 10);
-	asteroids.emplace_back(SCREEN_WIDTH-100.0, SCREEN_HEIGHT-100.0, rand() % 361, ((float)rand()) / ((float)RAND_MAX) * 2, ((float)rand()) / ((float)RAND_MAX) * 2, 10);
-    while (!done) {
+    while (!done) { 
+		if (asteroids.size() == 0 ) {
+			level++;
+			for (int i = 0; i < level + 4; i++) {
+				float x, y;
+				do {
+					x = rand() % (int)screenWidth;
+					y = rand() % (int)screenHeight;
+					} while (sqrt(pow(x - ship.x, 2) + pow(y - ship.y, 2)) < 200);
+				asteroids.emplace_back(x, y, rand() % 361, generateRandom(-1, 1), generateRandom(-1, 1), 12);
+			}
+			std::cout << "Level " << level << std::endl;
+		}
 		SDL_Event event;
-		std::cout << "x: " << ship.x << " y: " << ship.y << " angle: " << ship.angle << " xVel: " << ship.xVel << " yVel: " << ship.yVel << std::endl;
-		ship.xVel = ship.xVel > 1? 1 : ship.xVel < -1 ? -1 : ship.xVel;
-		ship.yVel = ship.yVel > 1? 1 : ship.yVel < -1 ? -1 : ship.yVel;
-		ship.x += ship.xVel;
-		ship.y += ship.yVel;
 		const Uint8* keystates = SDL_GetKeyboardState(NULL);
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				done = true;
 			}
 			if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-				SCREEN_WIDTH = event.window.data1;
-				SCREEN_HEIGHT = event.window.data2;
+				screenWidth = event.window.data1;
+				screenHeight = event.window.data2;
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 				SDL_RenderClear(renderer);
+			}
+			if (event.key.keysym.sym == SDLK_SPACE && event.type == SDL_KEYUP) {
+				bullets.emplace_back(ship.x, ship.y, ship.angle, 10 * sin(ship.angle * M_PI / 180), -10 * cos(ship.angle * M_PI / 180));
 			}
 		}
 		SDL_PumpEvents();
 		if (keystates[SDL_SCANCODE_UP]) {
-			ship.yVel -= ship.speed * cos(ship.angle * M_PI / 180);
 			ship.xVel += ship.speed * sin(ship.angle * M_PI / 180);
+			ship.yVel -= ship.speed * cos(ship.angle * M_PI / 180);
 		}
 		if (keystates[SDL_SCANCODE_LEFT]) {
 			ship.angle -= 3;
@@ -196,21 +260,11 @@ int main(int argc, char** argv)
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 		SDL_RenderClear(renderer);
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-		SDL_FPoint newShip = drawShip(renderer, ship.x, ship.y,ship.angle);
-		ship.x = newShip.x;
-		ship.y = newShip.y;
-		for (int i = 0; i < asteroids.size(); i++) {
-			//asteroid sizes 10, 6, 3
-			asteroids[i].x += asteroids[i].xVel;
-			asteroids[i].y += asteroids[i].yVel;
-			SDL_FPoint newAsteroid = drawAsteroid(renderer, asteroids[i].x, asteroids[i].y, asteroids[i].angle, asteroids[i].size);
-			asteroids[i].x = newAsteroid.x;
-			asteroids[i].y = newAsteroid.y;
-			//collision detection
-		}
+		drawShip(renderer);
+		drawBullets(renderer);
+		drawAsteroid(renderer);
 		SDL_RenderPresent(renderer);
 	}
-
 	if (renderer) {
 		SDL_DestroyRenderer(renderer);
 	}
@@ -218,5 +272,10 @@ int main(int argc, char** argv)
 		SDL_DestroyWindow(window);
 	}
     SDL_Quit();
+	std::cout << "+--Game Over--+" << std::endl;
+	std::cout << "Score: " << score << std::endl;
+	std::cout << "Level: " << level << std::endl;
+	std::cout << "Press Enter to continue" << std::endl;
+	std::cin.get();
     return 0;
 }
