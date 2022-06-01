@@ -69,7 +69,6 @@ std::vector<SDL_FPoint> rotatePointsAndScale(std::vector<SDL_FPoint> points, flo
 	}
 	return points;
 };
-//check if point is inside polygon
 bool checkifPointIsInsidePolygon(SDL_FPoint point, std::vector<SDL_FPoint> pointsOfPolygon) {
 	int i, j = 0;
 	bool c = false;
