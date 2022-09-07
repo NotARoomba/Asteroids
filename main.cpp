@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <math.h>
 #include <vector>
 #include <stdlib.h>
@@ -169,8 +169,6 @@ void drawAsteroid(SDL_Renderer* renderer) {
 	}
 };
 SDL_FPoint drawShip(SDL_Renderer* renderer) {
-	ship.xVel = ship.xVel > 1 ? 1 : ship.xVel < -1 ? -1 : ship.xVel;
-	ship.yVel = ship.yVel > 1 ? 1 : ship.yVel < -1 ? -1 : ship.yVel;
 	float x = ship.x += ship.xVel;
 	float y = ship.y += ship.yVel;
 	std::vector<SDL_FPoint> points = rotatePointsAndScale({{x, y}, {x + 8, y - 30}, {x, y - 20}, {x - 8, y - 30}, {x, y} }, ship.angle);
