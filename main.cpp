@@ -57,12 +57,15 @@ int score, level = 0;
 std::vector<SDL_FPoint> rotatePointsAndScale(std::vector<SDL_FPoint> points, float angle, int scale = 1)
 {
 	std::vector<SDL_FPoint> newPoints;
+	//has gets the x, y of the first point
 	float cx = points[0].x;
 	float cy = points[0].y;
 	for (int i = 1; i < points.size()-1; i++)
 	{
+		//gets the next point in the series
 		float x = points[i].x;
 		float y = points[i].y;
+		//adds the original point to the original point and unknown cos and sin calc
 		float x2 = cx + (((x - cx) * scale) * cos(angle * M_PI / 180)) - (((cy - y) * scale) * sin(angle * M_PI / 180));
 		float y2 = cy + (((cy - y) * scale) * cos(angle * M_PI / 180)) + (((x - cx) * scale) * sin(angle * M_PI / 180));
 		points[i] = {x2, y2};
