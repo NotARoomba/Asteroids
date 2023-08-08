@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    @font-face {
+        font-family: 'ibm16';
+        src: url('../assets/fonts/IBM_VGA_8x16.ttf');
+    }
+    @font-face {
+        font-family: 'ibm8';
+        src: url('../assets/fonts/IBM_EGA_8x8.ttf');
+    }
+}
