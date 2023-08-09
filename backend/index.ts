@@ -1,12 +1,19 @@
 import express, { Request, Response } from "express";
+import cors, { CorsOptions } from "cors";
 import { connectToDatabase } from "./services/database.service";
 import { scoresRouter } from "./routers/scores.router";
 
 const app = express();
 const port = 3001;
 
+const corsOptions: CorsOptions = {
+  origin: "https://asteroids.notaroomba.xyz",
+  optionsSuccessStatus: 200,
+};
+
 connectToDatabase()
   .then(() => {
+    app.use(cors<Request>(corsOptions));
     app.use("/scores", scoresRouter);
 
     app.use("/", async (_req: Request, res: Response) => {
