@@ -13,7 +13,7 @@ const corsOptions: CorsOptions = {
 
 connectToDatabase()
   .then(() => {
-    app.use(cors<Request>(corsOptions));
+    app.use(cors(corsOptions));
     app.use("/scores", scoresRouter);
 
     app.use("/", async (_req: Request, res: Response) => {
