@@ -1,6 +1,6 @@
 import { Stage } from "@pixi/react";
 import { Link } from "react-router-dom";
-import { useWindowDimension } from "../utils/useWindowDimension.js";
+import { useWindowDimension } from "../utils/useWindowDimension";
 import Game from "../objects/Game.js";
 import Transitions from "../utils/Transitions.js";
 import { vec2 } from "../utils/Types.js";
