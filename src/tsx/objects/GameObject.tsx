@@ -42,7 +42,7 @@ export default class GameObject {
         })
         const altDraw = ((g: G) => {
             g.clear()
-            g.lineStyle(2, '#f0d56f')
+            g.lineStyle(2, '#ffffff')
             g.drawPolygon(altPoints)
         })
         this.points = points;

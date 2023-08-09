@@ -16,15 +16,22 @@ export default class Asteroid  extends GameObject {
         this.pos.y += this.vel.y * dt;
         for (let i = 0; i < universe.bullets.length; i++) {
             if (checkifPointIsInsidePolygon(universe.bullets[i].pos, this.points) || checkifPointIsInsidePolygon(universe.bullets[i].pos, this.altPoints)) {
-                if (this.s > 6) {
-                    universe.asteroids.push(new Asteroid(this.pos, new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
-                    universe.asteroids.push(new Asteroid(this.pos, new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
+                if (this.s > 5) {
+                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*5, this.pos.y+Math.random()*5), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
+                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*5, this.pos.y+Math.random()*5), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
+                } else {
+                    universe.score+=0;
                 }
                 universe.score+=parseInt(((5/this.s)*10).toFixed(0));
                 universe.asteroids.splice(universe.asteroids.indexOf(this), 1);
                 universe.bullets.splice(universe.bullets.indexOf(universe.bullets[i]), 1);
                 break;
             } 
+        }
+        for (let l = 0; l < universe.ship.points.length; l++) {
+            if (checkifPointIsInsidePolygon(universe.ship.points[l], this.points) || checkifPointIsInsidePolygon(universe.ship.points[l], this.altPoints)) {
+                universe.done = true;
+            }
         }
         return universe;
     }

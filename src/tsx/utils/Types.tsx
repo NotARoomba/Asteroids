@@ -15,7 +15,7 @@ export class vec2 implements vec2Prop {
     }
 }
 export interface GameProps {
-	player: boolean; screen: vec2; count: number; setLevel: (l: number) => void; setScore: (n: number) => void;
+	player: boolean; screen: vec2; count: number; setLevel: (l: number) => void; setScore: (n: number) => void; gameOver: () => void;
 }
 
 export interface UniverseProp {
@@ -24,6 +24,7 @@ export interface UniverseProp {
 	bullets: Bullet[];
 	score: number;
 	level: number;
+	done: boolean;
 }
 
 export class Universe implements UniverseProp {
@@ -32,12 +33,14 @@ export class Universe implements UniverseProp {
 	bullets: Bullet[];
 	score: number;
 	level: number;
+	done: boolean;
 	constructor(screen: vec2) {
         this.asteroids = [];
         this.ship = new Player(new vec2(screen.x/2, screen.y/2), new vec2(0, 0), 1.5);
         this.bullets = [];
 		this.score = 0;
 		this.level = 0
+		this.done = false;
     }
 }
 
