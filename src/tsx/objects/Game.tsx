@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTick } from '@pixi/react';
+import { Graphics, useTick, } from '@pixi/react';
 import { GameProps, Universe, vec2 } from "../utils/Types";
 import Keyboard from 'pixi.js-keyboard';
 
@@ -55,5 +55,5 @@ export default function Game({ player, screen, count, setLevel, setScore}: GameP
   if (universe == null ) {
     universe = new Universe(screen);
   }
-  return [...universe.asteroids.map((v, i) => v.draw(screen, i+1)), ...universe.bullets.map((v, i) => v.draw(screen, i+2)), player?universe.ship.draw(screen):undefined];
+  return [...universe.asteroids.map((v, i) => v.draw(screen, i)), ...universe.bullets.map((v, i) => v.draw(screen, i+2)), player?universe.ship.draw(screen):<Graphics/>];
 }
