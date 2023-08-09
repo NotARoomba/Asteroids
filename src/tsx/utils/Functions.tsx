@@ -1,5 +1,6 @@
 import { Point } from "pixi.js";
 import { vec2 } from "./Types";
+import robustPointInPolygon from "robust-point-in-polygon";
 
 export function makeCopy(points: Point[], screen: vec2) {
 	const altPoints: Point[] = points.map(point => point.clone());
@@ -45,10 +46,26 @@ export function makeCopy(points: Point[], screen: vec2) {
     return altPoints;
 }
 
+export function pointIsInPoly(p: vec2, polygon: Point[]) {
+	if (polygon.length == 0) return false;
+    let minX = polygon[0].x, maxX = polygon[0].x;
+    let minY = polygon[0].y, maxY = polygon[0].y;
+    for (let n = 1; n < polygon.length; n++) {
+        const q = polygon[n];
+        minX = Math.min(q.x, minX);
+        maxX = Math.max(q.x, maxX);
+        minY = Math.min(q.y, minY);
+        maxY = Math.max(q.y, maxY);
+    }
+
+    if (p.x < minX || p.x > maxX || p.y < minY || p.y > maxY) return false
+	return robustPointInPolygon(polygon.map(v=>[v.x, v.y]), [p.x, p.y]) <= 0;
+}
+
 export function checkifPointIsInsidePolygon(point: vec2, pointsOfPolygon: Point[]) {
 	let i = 0, j = 0;
 	let c: boolean = false;
-	for (i = 0, j = pointsOfPolygon.length - 1; i < pointsOfPolygon.length; j = i++) {
+	for (i = 0, j = pointsOfPolygon.length - 1 ; i < pointsOfPolygon.length; j = i++) {
 		if (((pointsOfPolygon[i].y > point.y) != (pointsOfPolygon[j].y > point.y)) &&
 			(point.x < (pointsOfPolygon[j].x - pointsOfPolygon[i].x) * (point.y - pointsOfPolygon[i].y) / (pointsOfPolygon[j].y - pointsOfPolygon[i].y) + pointsOfPolygon[i].x))
 			c = !c;
@@ -56,3 +73,20 @@ export function checkifPointIsInsidePolygon(point: vec2, pointsOfPolygon: Point[
 	return c;
 }
 
+export function rotatePointsAndScale(points: Point[], angle: number, scale: number = 1) {
+	//has gets the x, y of the first point
+	const cx = points[0].x;
+	const cy = points[0].y;
+	angle+=180;
+	for (let i = 1; i < points.length-1; i++)
+	{
+		//gets the next point in the series
+		const x = points[i].x;
+		const y = points[i].y;
+		//adds the original point to the original point and unknown cos and sin calc
+		const x2 = cx + (((x - cx) * scale) * Math.cos(angle * Math.PI / 180)) - (((cy - y) * scale) * Math.sin(angle * Math.PI / 180));
+		const y2 = cy + (((cy - y) * scale) * Math.cos(angle * Math.PI / 180)) + (((x - cx) * scale) * Math.sin(angle * Math.PI / 180));
+		points[i] = new Point(x2, y2);
+	}
+	return points;
+}

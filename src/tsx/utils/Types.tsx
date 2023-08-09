@@ -14,6 +14,14 @@ export class vec2 implements vec2Prop {
         this.y = _y;
     }
 }
+
+export interface KeyProp {
+	forward: boolean;
+	space: boolean;
+	left: boolean;
+	right: boolean;
+}
+
 export interface GameProps {
 	player: boolean; screen: vec2; count: number; setLevel: (l: number) => void; setScore: (n: number) => void; gameOver: () => void;
 }

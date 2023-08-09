@@ -1,7 +1,7 @@
-import { Point, Graphics as G } from "pixi.js";
+import { Point, Graphics as G, Rectangle } from "pixi.js";
 import { Graphics } from "@pixi/react";
 import { Universe, vec2 } from "../utils/Types";
-import { makeCopy } from "../utils/Functions";
+import { makeCopy, rotatePointsAndScale } from "../utils/Functions";
 
 export default class GameObject {
     pos: vec2;
@@ -10,6 +10,8 @@ export default class GameObject {
     r: number
     points: Point[];
     altPoints: Point[];
+    bounds: Rectangle;
+    altBounds: Rectangle;
     constructor(position: vec2, velocity: vec2, size: number) {
         this.pos = position;
         this.vel = velocity;
@@ -17,6 +19,8 @@ export default class GameObject {
         this.r = Math.random()*360;
         this.points = [];
         this.altPoints = [];
+        this.bounds = new Rectangle;
+        this.altBounds = new Rectangle;
     }
     move(dt: number, universe: Universe) {
         this.pos.x += this.vel.x * dt;
@@ -33,7 +37,7 @@ export default class GameObject {
     draw(screen: vec2, i: number = 1) {
         const x: number = this.pos.x;
         const y: number = this.pos.y;
-        const points: Point[] = ([new Point(x, y), new Point((x + 2), y - 1), new Point(x + 3, y + 1), new Point(x + 4, y + 3), new Point(x + 2, y + 5), new Point(x + 2, y + 6), new Point(x + 3, y + 7), new Point(x - 1, y + 9), new Point(x - 3, y + 7), new Point(x - 4, y + 8), new Point(x - 6, y + 7), new Point(x - 6, y + 4), new Point(x - 5, y + 2), new Point(x - 5, y - 0), new Point(x - 3, y + 1), new Point(x - 3, y - 1), new Point(x, y) ].map(v => new Point(((v.x-x)*this.s)+x, ((v.y-y)*this.s)+y)))
+        const points: Point[] = rotatePointsAndScale([new Point(x, y), new Point((x + 2), y - 1), new Point(x + 3, y + 1), new Point(x + 4, y + 3), new Point(x + 2, y + 5), new Point(x + 2, y + 6), new Point(x + 3, y + 7), new Point(x - 1, y + 9), new Point(x - 3, y + 7), new Point(x - 4, y + 8), new Point(x - 6, y + 7), new Point(x - 6, y + 4), new Point(x - 5, y + 2), new Point(x - 5, y - 0), new Point(x - 3, y + 1), new Point(x - 3, y - 1), new Point(x, y) ], this.r, this.s);
         const altPoints = makeCopy(points, screen)
         const draw = ((g: G) => {
             g.clear()
@@ -44,7 +48,7 @@ export default class GameObject {
             g.clear()
             g.lineStyle(2, '#ffffff')
             g.drawPolygon(altPoints)
-        })
+        }) 
         this.points = points;
         this.altPoints = altPoints;
         this.pos.x = ((points[0].x < 0) || (points[0].x >screen.x) || (points[0].y < 0) || (points[0].y >screen.y)) ? altPoints[0].x : points[0].x;

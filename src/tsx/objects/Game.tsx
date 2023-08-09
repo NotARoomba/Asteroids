@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Graphics, useTick, } from '@pixi/react';
-import { GameProps, Universe, vec2 } from "../utils/Types";
-import Keyboard from 'pixi.js-keyboard';
+import { GameProps, KeyProp, Universe, vec2 } from "../utils/Types";
 
 import Asteroid from "./Asteroid";
 import Bullet from "./Bullet";
@@ -13,6 +12,46 @@ const BULLET_SPEED: number = 10;
 let universe: Universe;
 
 export default function Game({ player, screen, count, setLevel, setScore, gameOver}: GameProps) {
+  const [keys, setKeys] = useState<KeyProp>({forward: false, space: false, left: false, right: false});
+  useEffect(() => {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    event.preventDefault();
+    if (event.key == ' ') {
+      setKeys({...keys, space: true})
+    }
+    if (event.key == 'w') {
+      setKeys({...keys, forward: true})
+    }
+    if (event.key == 'a') {
+      setKeys({...keys, left: true})
+    }
+    if (event.key == 'd') {
+      setKeys({...keys, right: true})
+    }
+  }
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    event.preventDefault();
+    if (event.key == ' ') {
+      setKeys({...keys, space: false})
+    }
+    if (event.key == 'w') {
+      setKeys({...keys, forward: false})
+    }
+    if (event.key == 'a') {
+      setKeys({...keys, left: false})
+    }
+    if (event.key == 'd') {
+      setKeys({...keys, right: false})
+    }
+  }
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    return function removeListeners() {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    }
+  }, [keys]);
   const [render, setRender] = useState(0);
   if (universe == null ) {
     universe = new Universe(screen);
@@ -25,37 +64,45 @@ export default function Game({ player, screen, count, setLevel, setScore, gameOv
         setLevel(universe.level);
         for (let i = 0; i < (count+universe.level); i++) {
           const ap: vec2 = new vec2(0, 0);
+          let size: number = 0;
           do {
             ap.x = Math.random()*screen.x;
             ap.y = Math.random()*screen.y;
-          } while (Math.sqrt(Math.pow(ap.x - universe.ship.pos.x, 2) + Math.pow(ap.y - universe.ship.pos.y, 2)) < 200)
-          universe.asteroids.push(new Asteroid(ap, new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), (Math.random()*12)+5));
+            size = (Math.random()*12)+5;
+          } while ((Math.sqrt(Math.pow(ap.x - universe.ship.pos.x, 2) + Math.pow(ap.y - universe.ship.pos.y, 2))+size) < 200)
+          universe.asteroids.push(new Asteroid(ap, new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), size));
         }
       }
+      let moved: boolean = false;
       if (player) {
-        Keyboard.update();
-        if (Keyboard.isKeyDown('ArrowUp', 'KeyW')) {
+        if (keys.forward == true) {
           universe.ship.addVel(new vec2(SHIP_SPEED*Math.sin(-universe.ship.r* Math.PI/180), SHIP_SPEED*Math.cos(-universe.ship.r* Math.PI/180)), delta);
+          moved = moved?moved:true;
           //if (Math.abs(universe[0].vel.x) > 1) universe[0].vel.x = universe[0].vel.x > 0?1:-1;
           //if (Math.abs(universe[0].vel.y) > 1) universe[0].vel.y = universe[0].vel.y > 0?1:-1;
         }
-        if (Keyboard.isKeyDown('ArrowLeft', 'KeyA')) {
-          universe.ship.addRot(-3);
+        if (keys.left) {
+          universe.ship.addRot(-2);
         }
-        if (Keyboard.isKeyDown('ArrowRight', 'KeyD')) {
-          universe.ship.addRot(3);
+        if (keys.right) {
+          universe.ship.addRot(2);
         }
-        if (Keyboard.isKeyDown('Space')) {
-          if (render%12==0) universe.bullets.push(new Bullet(new vec2(universe.ship.pos.x, universe.ship.pos.y), new vec2(BULLET_SPEED*Math.sin(-universe.ship.r* Math.PI/180), BULLET_SPEED*Math.cos(-universe.ship.r* Math.PI/180)), 1))
-        }
+        if (keys.space) {
+          universe.bullets.push(new Bullet(new vec2(universe.ship.pos.x, universe.ship.pos.y), new vec2(BULLET_SPEED*Math.sin(-universe.ship.r* Math.PI/180), BULLET_SPEED*Math.cos(-universe.ship.r* Math.PI/180)), 1))
+          setKeys({...keys, space: false})
+        } 
       }
       if (player) universe.ship.move(delta, universe);
+      if (!moved) {
+        universe.ship.isMoving = false;
+        moved = false;
+      }
       universe.asteroids.forEach(v => {
         v.move(delta, universe);
       })
       setScore(universe.score);
       universe.bullets.forEach((v) => {
-        if (v.pos.x > screen.x || v.pos.x < 0 || v.pos.y > screen.y || v.pos.y < 0) return universe?.bullets.splice(universe.bullets.indexOf(v), 1)
+        if ((v.pos.x > screen.x || v.pos.x < 0 || v.pos.y > screen.y || v.pos.y < 0)) return universe?.bullets.splice(universe.bullets.indexOf(v), 1)
         v.move(delta, universe);
       })
     } else {

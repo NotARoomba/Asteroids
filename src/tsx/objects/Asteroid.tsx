@@ -1,4 +1,4 @@
-import { checkifPointIsInsidePolygon } from "../utils/Functions";
+import { pointIsInPoly } from "../utils/Functions";
 import { Universe, vec2 } from "../utils/Types";
 import GameObject from "./GameObject";
 
@@ -15,10 +15,10 @@ export default class Asteroid  extends GameObject {
         this.pos.x += this.vel.x * dt;
         this.pos.y += this.vel.y * dt;
         for (let i = 0; i < universe.bullets.length; i++) {
-            if (checkifPointIsInsidePolygon(universe.bullets[i].pos, this.points) || checkifPointIsInsidePolygon(universe.bullets[i].pos, this.altPoints)) {
+            if (pointIsInPoly(universe.bullets[i].pos, this.points) || pointIsInPoly(universe.bullets[i].pos, this.altPoints)) {
                 if (this.s > 5) {
-                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*5, this.pos.y+Math.random()*5), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
-                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*5, this.pos.y+Math.random()*5), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
+                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*10, this.pos.y+Math.random()*10), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
+                    universe.asteroids.push(new Asteroid(new vec2(this.pos.x+Math.random()*10, this.pos.y+Math.random()*10), new vec2((Math.random()-0.5)*0.75, (Math.random()-0.5)*0.75), this.s/2))
                 } else {
                     universe.score+=0;
                 }
@@ -29,7 +29,7 @@ export default class Asteroid  extends GameObject {
             } 
         }
         for (let l = 0; l < universe.ship.points.length; l++) {
-            if (checkifPointIsInsidePolygon(universe.ship.points[l], this.points) || checkifPointIsInsidePolygon(universe.ship.points[l], this.altPoints)) {
+            if (pointIsInPoly(universe.ship.points[l], this.points) || pointIsInPoly(universe.ship.points[l], this.altPoints)) {
                 universe.done = true;
             }
         }

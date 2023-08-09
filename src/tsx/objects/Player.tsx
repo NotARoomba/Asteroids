@@ -1,10 +1,11 @@
 import { Point, Graphics as G } from "pixi.js";
 import { Graphics } from "@pixi/react";
-import { vec2 } from "../utils/Types";
+import { Universe, vec2 } from "../utils/Types";
 import GameObject from "./GameObject";
-import { makeCopy } from "../utils/Functions";
+import { makeCopy, rotatePointsAndScale } from "../utils/Functions";
 
 export default class Player extends GameObject {
+    isMoving: boolean = false;
     super(position: vec2, velocity: vec2, size: number) {
         this.pos = position;
         this.vel = velocity;
@@ -13,24 +14,28 @@ export default class Player extends GameObject {
         this.points = [];
         this.altPoints = [];
     }
+    move(dt: number, universe: Universe) {
+        this.pos.x += this.vel.x * dt;
+        this.pos.y += this.vel.y * dt;
+        this.isMoving = true;
+        return universe;
+    }
     draw(screen: vec2, i: number = 1) {
         const x: number = this.pos.x;
         const y: number = this.pos.y;
-        const points: Point[] = ([new Point(x, y), new Point(x + 8, y - 30), new Point(x, y - 20), new Point(x - 8, y - 30), new Point(x, y)].map(v => new Point(((v.x-x)*this.s)+x, ((v.y-y)*this.s)+y)))
+        const trail: Point[] = [new Point(x, y), new Point(x - 6, y - 24), new Point(x, y - 36), new Point(x + 6, y - 24), new Point(x, y)];
+        let points: Point[] = ([new Point(x, y), new Point(x + 8, y - 32), new Point(x, y - 20), new Point(x - 8, y - 32)])
+        if (this.isMoving) points.push(...trail);
+        else points.push(new Point(x, y))
+        points = rotatePointsAndScale(points, this.r, this.s)
         const altPoints = makeCopy(points, screen)
         const draw = ((g: G) => {
             g.clear()
-            g.position = {x, y};
-            g.pivot = new Point(x, y);
-            g.angle = this.r;
             g.lineStyle(2, '#ffffff')
             g.drawPolygon(points)
         })
         const altDraw = ((g: G) => {
             g.clear()
-            g.position = altPoints[0];
-            g.pivot = altPoints[0];
-            g.angle = this.r;
             g.lineStyle(2, '#ffffff')
             g.drawPolygon(altPoints)
         })
