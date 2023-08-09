@@ -1,5 +1,5 @@
-declare module 'pixi.js-keyboard';
+declare module "pixi.js-keyboard";
 
 declare class Keyboard {
-    isKeyPressed();
+  isKeyPressed();
 }

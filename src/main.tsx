@@ -1,19 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import './css/index.css'
-import Home from './tsx/pages/Home.js'
-import Play from './tsx/pages/Play.js';
-import Error from './tsx/pages/Error.js';
+import "./css/index.css";
+import Home from "./tsx/pages/Home.js";
+import Play from "./tsx/pages/Play.js";
+import Error from "./tsx/pages/Error.js";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home/>, errorElement:<Error/>},
-  { path: "/play", element: <Play/>, errorElement:<Error/>},
-  {path: "*", element: <Error/>}
+  { path: "/", element: <Home />, errorElement: <Error /> },
+  { path: "/play", element: <Play />, errorElement: <Error /> },
+  { path: "*", element: <Error /> },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-   <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   </React.StrictMode>,
-)
+);

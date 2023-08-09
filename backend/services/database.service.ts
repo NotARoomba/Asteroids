@@ -1,5 +1,5 @@
-import * as mongoDB from 'mongodb';
-import * as dotenv from 'ts-dotenv';
+import * as mongoDB from "mongodb";
+import * as dotenv from "ts-dotenv";
 
 const env = dotenv.load({
   MONGODB: String,
@@ -30,5 +30,5 @@ export async function connectToDatabase() {
   );
   collections.salones = salonsCollection;
 
-  console.log('Successfully connected to database!');
+  console.log("Successfully connected to database!");
 }
