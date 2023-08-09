@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <time.h> 
 
-int screenWidth = 800;
-int screenHeight = 600;
+float screenWidth = 800.0;
+float screenHeight = 600.0;
 
 
 struct {
@@ -171,7 +171,7 @@ void drawAsteroid(SDL_Renderer* renderer) {
 		asteroids[k].y = points[0].x < 0.0f || points[0].x >(float)screenWidth || points[0].y < 0.0f || points[0].y >(float)screenHeight ? altPoints[0].y : points[0].y;
 	}
 };
-SDL_FPoint drawShip(SDL_Renderer* renderer) {
+void drawShip(SDL_Renderer* renderer) {
 	float x = ship.x += ship.xVel;
 	float y = ship.y += ship.yVel;
 	std::vector<SDL_FPoint> points = rotatePointsAndScale({{x, y}, {x + 8, y - 30}, {x, y - 20}, {x - 8, y - 30}, {x, y} }, ship.angle);
