@@ -8,7 +8,7 @@ export const scoresRouter = express.Router();
 
 scoresRouter.use(express.json());
 
-scoresRouter.get("/", async (req: Request, res: Response) => {
+scoresRouter.get("/", cors(corsOptions),  async (req: Request, res: Response) => {
   try {
     let scores: Score[] = [];
     if (collections.scores) {
@@ -20,8 +20,8 @@ scoresRouter.get("/", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send({ error: true, msg: error });
   }
-}, cors(corsOptions));
-scoresRouter.post("/", async (req: Request, res: Response) => {
+});
+scoresRouter.post("/", cors(corsOptions), async (req: Request, res: Response) => {
   const name = req.body.name;
   const score = req.body.score;
   const level = req.body.level;
@@ -33,4 +33,4 @@ scoresRouter.post("/", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send({ error: true, msg: error });
   }
-}, cors(corsOptions));
+});

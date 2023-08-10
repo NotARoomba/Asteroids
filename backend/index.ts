@@ -15,8 +15,7 @@ export const corsOptions: CorsOptions = {
 connectToDatabase()
   .then(() => {
     app.use(cors(corsOptions));
-    app.options("*", cors(corsOptions));
-    app.use("/scores", scoresRouter, cors(corsOptions));
+    app.use("/scores", cors(corsOptions), scoresRouter);
 
     app.use("/", async (_req: Request, res: Response) => {
       res.status(200).send("You arent supposed to be here");
