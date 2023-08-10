@@ -139,6 +139,7 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            date: Math.floor(Date.now()/1000).toString(),
           },
           body: JSON.stringify(body),
         })
@@ -149,6 +150,7 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            date: Math.floor(Date.now()/1000).toString(),
           },
         })
       ).json();
