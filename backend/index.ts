@@ -8,7 +8,7 @@ const app = express();
 const port = 3001;
 
 export const corsOptions: CorsOptions = {
-  origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz', 'https://localhost:5173', 'https://localhost'],
+  origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz', 'http://localhost:5173', 'http://localhost'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }
 
