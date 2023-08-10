@@ -12,8 +12,8 @@ export const corsOptions: CorsOptions = {
 }
 
 const genSecret = async (req: Request) => {
-  //console.log(req.headers, req.rawHeaders)
-  return JSON.stringify(req.body)
+  console.log(req)
+  return 'a'
 };
 
 connectToDatabase()
