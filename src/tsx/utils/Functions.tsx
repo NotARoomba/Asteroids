@@ -139,8 +139,9 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            time: Math.floor(Date.now()/1000).toString(),
           },
-          body: JSON.stringify({...body, time: Math.floor(Date.now()/1000).toString(),}),
+          body: JSON.stringify(body),
         })
       ).json()
     : await (
@@ -149,8 +150,8 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            time: Math.floor(Date.now()/1000).toString(),
           },
-          body: JSON.stringify({time: Math.floor(Date.now()/1000).toString()})
         })
       ).json();
 }
