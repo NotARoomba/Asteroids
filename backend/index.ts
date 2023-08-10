@@ -1,19 +1,14 @@
 import express, { Request, Response } from "express";
-import cors, { CorsOptions } from "cors";
+import cors from "cors";
 import { connectToDatabase } from "./services/database.service";
 import { scoresRouter } from "./routers/scores.router";
 
 const app = express();
 const port = 3001;
 
-const corsOptions: CorsOptions = {
-  origin: "https://asteroids.notaroomba.xyz",
-  optionsSuccessStatus: 200,
-};
-
 connectToDatabase()
   .then(() => {
-    app.use(cors(corsOptions));
+    app.use(cors({origin: 'https://asteroids.notaroomba.xyz'}));
     app.use("/scores", scoresRouter);
 
     app.use("/", async (_req: Request, res: Response) => {
