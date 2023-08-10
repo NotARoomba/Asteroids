@@ -26,7 +26,7 @@ export default function Play() {
   };
   const closeGameModal = () => {
     setGameModal(false);
-  }
+  };
   return (
     <Transitions>
       <p className="absolute top-0 left-0 p-5 text-4xl text-neutral-300 bg-transparent">
@@ -51,7 +51,11 @@ export default function Play() {
         />
       </Stage>
       {done ? (
-        <GameOver modalOpen={gameModal} closeModal={closeGameModal} curData={{name: '', level, score}}/>
+        <GameOver
+          modalOpen={gameModal}
+          closeModal={closeGameModal}
+          curData={{ name: "", level, score }}
+        />
       ) : (
         <></>
       )}

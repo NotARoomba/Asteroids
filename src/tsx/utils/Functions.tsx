@@ -1,5 +1,5 @@
 import { Point } from "pixi.js";
-import { vec2 } from "./Types";
+import { ScoreProp, vec2 } from "./Types";
 import Crypto from "crypto-js";
 import robustPointInPolygon from "robust-point-in-polygon";
 
@@ -126,25 +126,29 @@ export function rotatePointsAndScale(
   return points;
 }
 
-
 export async function callAPI(
   endpoint: string,
   method: string,
   body: object = {},
 ) {
-  const API = 'https://asteroids-api.notaroomba.xyz'
+  const API = "https://asteroids-api.notaroomba.xyz";
   const time = Date.now().toString();
   const data = JSON.stringify(body);
-  const digest = Crypto.enc.Hex.stringify(Crypto.HmacSHA256(time+method+endpoint+Crypto.MD5(data).toString(), Math.floor(Date.now()/(30*1000)).toString()));
+  const digest = Crypto.enc.Hex.stringify(
+    Crypto.HmacSHA256(
+      time + method + endpoint + Crypto.MD5(data).toString(),
+      Math.floor(Date.now() / (30 * 1000)).toString(),
+    ),
+  );
   const hmac = `HMAC ${time}:${digest}`;
-  return method === 'POST'
+  return method === "POST"
     ? await (
         await fetch(API + endpoint, {
           method: method,
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: hmac
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: hmac,
           },
           body: JSON.stringify(body),
         })
@@ -153,10 +157,22 @@ export async function callAPI(
         await fetch(API + endpoint, {
           method: method,
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': hmac
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: hmac,
           },
         })
       ).json();
+}
+
+export function sortScores(scores: ScoreProp[]) {
+  return scores
+        .sort((a: ScoreProp, b: ScoreProp) => a.score - b.score)
+        .concat(
+          Array(5 - scores.length).fill({
+            name: "Unknown",
+            score: 0,
+            level: 0,
+          }),
+        );
 }

@@ -47,6 +47,7 @@ export default function Game({
         setKeys({ ...keys, space: false });
       }
       if (event.key == "w") {
+        console.log(event.key)
         setKeys({ ...keys, forward: false });
       }
       if (event.key == "a") {
@@ -56,11 +57,11 @@ export default function Game({
         setKeys({ ...keys, right: false });
       }
     };
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-    return function removeListeners() {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
+    document.onkeydown = handleKeyDown;
+    document.onkeyup = handleKeyUp;
+    return () => {
+      document.onkeydown = null;
+      document.onkeyup = null;
     };
   }, [keys]);
   const [render, setRender] = useState(0);
@@ -154,6 +155,8 @@ export default function Game({
         v.move(delta, universe);
       });
     } else {
+      document.onkeydown = null;
+      document.onkeyup = null;
       return gameOver();
       //return <>{universe.asteroids.map((v, i) => v.draw(screen, i+3))}<Text><p className="align-middle justify-center m-auto mb-10 bg-black rounded animate-bouncepulse bg-opacity-50">Game Over</p></Text></>
     }
