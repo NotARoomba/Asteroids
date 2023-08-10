@@ -13,7 +13,7 @@ connectToDatabase()
 
     app.use("/", async (_req: Request, res: Response) => {
       res.status(200).send("You arent supposed to be here");
-    });
+    }, cors({origin: 'https://asteroids.notaroomba.xyz'}));
     app.listen(port, () => {
       console.log(`Server started at http://localhost:${port}`);
     });
