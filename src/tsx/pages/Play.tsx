@@ -51,7 +51,7 @@ export default function Play() {
         />
       </Stage>
       {done ? (
-        <GameOver modalOpen={gameModal} closeModal={closeGameModal} />
+        <GameOver modalOpen={gameModal} closeModal={closeGameModal} curData={{name: '', level, score}}/>
       ) : (
         <></>
       )}

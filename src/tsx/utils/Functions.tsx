@@ -137,7 +137,6 @@ export async function callAPI(
   const data = JSON.stringify(body);
   const digest = Crypto.enc.Hex.stringify(Crypto.HmacSHA256(time+method+endpoint+Crypto.MD5(data).toString(), Math.floor(Date.now()/(30*1000)).toString()));
   const hmac = `HMAC ${time}:${digest}`;
-  console.log(hmac)
   return method === 'POST'
     ? await (
         await fetch(API + endpoint, {
