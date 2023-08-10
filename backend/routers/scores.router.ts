@@ -1,14 +1,12 @@
 import express, { Request, Response } from "express";
 import { collections } from "../services/database.service";
 import Score from "../models/score";
-import cors from "cors";
-import { corsOptions } from "..";
 
 export const scoresRouter = express.Router();
 
 scoresRouter.use(express.json());
 
-scoresRouter.get("/", cors<Request>(corsOptions),  async (req: Request, res: Response) => {
+scoresRouter.get("/",  async (req: Request, res: Response) => {
   try {
     let scores: Score[] = [];
     if (collections.scores) {
@@ -21,7 +19,7 @@ scoresRouter.get("/", cors<Request>(corsOptions),  async (req: Request, res: Res
     res.status(500).send({ error: true, msg: error });
   }
 });
-scoresRouter.post("/", cors(corsOptions), async (req: Request, res: Response) => {
+scoresRouter.post("/", async (req: Request, res: Response) => {
   const name = req.body.name;
   const score = req.body.score;
   const level = req.body.level;
