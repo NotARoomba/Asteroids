@@ -6,7 +6,7 @@ import { scoresRouter } from "./routers/scores.router";
 const app = express();
 const port = 3001;
 
-const corsOptions: CorsOptions = {
+export const corsOptions: CorsOptions = {
   origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true // enable set cookie

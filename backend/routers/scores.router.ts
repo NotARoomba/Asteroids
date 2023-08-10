@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
 import { collections } from "../services/database.service";
 import Score from "../models/score";
+import cors from "cors";
+import { corsOptions } from "..";
 
 export const scoresRouter = express.Router();
 
@@ -18,7 +20,7 @@ scoresRouter.get("/", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send({ error: true, msg: error });
   }
-});
+}, cors(corsOptions));
 scoresRouter.post("/", async (req: Request, res: Response) => {
   const name = req.body.name;
   const score = req.body.score;
@@ -31,4 +33,4 @@ scoresRouter.post("/", async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).send({ error: true, msg: error });
   }
-});
+}, cors(corsOptions));
