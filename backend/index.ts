@@ -9,7 +9,6 @@ const port = 3001;
 
 export const corsOptions: CorsOptions = {
   origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz', 'http://localhost:5173', 'http://localhost'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }
 
 const genSecret = async (req: Request) => {
@@ -19,10 +18,10 @@ const genSecret = async (req: Request) => {
 
 connectToDatabase()
   .then(() => {
-    app.use(express.json());
     app.use(cors(corsOptions));
+    app.use(express.json());
     app.use(HMAC(genSecret));
-    app.use("/scores", scoresRouter, cors(corsOptions));
+    app.use("/scores", scoresRouter);
 
     app.use("/", async (_req: Request, res: Response) => {
       res.status(200).send("You arent supposed to be here");
