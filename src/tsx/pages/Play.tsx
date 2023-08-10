@@ -4,12 +4,14 @@ import { Stage } from "@pixi/react";
 import { useWindowDimension } from "../utils/useWindowDimension";
 import Game from "../objects/Game";
 import { vec2 } from "../utils/Types";
+import GameOver from "../modals/GameOver";
 
 export default function Play() {
   const [width, height] = useWindowDimension();
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(0);
   const [done, setDone] = useState(false);
+  const [gameModal, setGameModal] = useState(false);
   const sLevel = (l: number) => {
     setLevel(l);
   };
@@ -17,12 +19,14 @@ export default function Play() {
     setScore(n);
   };
   const gameOver = () => {
-    console.log("GAME OVER");
     if (!done) {
-      console.log("Done!");
+      setGameModal(true);
       setDone(true);
     }
   };
+  const closeGameModal = () => {
+    setGameModal(false);
+  }
   return (
     <Transitions>
       <p className="absolute top-0 left-0 p-5 text-4xl text-neutral-300 bg-transparent">
@@ -47,19 +51,7 @@ export default function Play() {
         />
       </Stage>
       {done ? (
-        <Transitions>
-          <div className="flex flex-col h-screen text-neutral-200">
-            <p className="align-middle justify-center m-auto mb-10 bg-black rounded animate-bouncepulse bg-opacity-50 text-8xl">
-              Game Over!
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="text-4xl m-auto justify-center align-middle text-center mt-5 py-4 px-10 outline-double outline-4 hover:animate-colorpulse"
-            >
-              Play Again
-            </button>
-          </div>
-        </Transitions>
+        <GameOver modalOpen={gameModal} closeModal={closeGameModal} />
       ) : (
         <></>
       )}

@@ -124,3 +124,32 @@ export function rotatePointsAndScale(
   }
   return points;
 }
+
+
+export async function callAPI(
+  endpoint: string,
+  method: string,
+  body: object = {},
+) {
+  const API = 'https://asteroids-api.notaroomba.xyz'
+  return method === 'POST'
+    ? await (
+        await fetch(API + endpoint, {
+          method: method,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        })
+      ).json()
+    : await (
+        await fetch(API + endpoint, {
+          method: method,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        })
+      ).json();
+}

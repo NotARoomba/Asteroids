@@ -31,6 +31,12 @@ export interface GameProps {
   gameOver: () => void;
 }
 
+export interface ScoreProp {
+  name: string;
+  level: number;
+  score: number;
+}
+
 export interface UniverseProp {
   asteroids: Asteroid[];
   ship: Player;

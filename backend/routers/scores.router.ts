@@ -20,12 +20,10 @@ scoresRouter.get("/",  async (req: Request, res: Response) => {
   }
 });
 scoresRouter.post("/", async (req: Request, res: Response) => {
-  const name = req.body.name;
-  const score = req.body.score;
-  const level = req.body.level;
+  const data: Score = req.body;
   try {
     if (collections.scores) {
-      await collections.scores.insertOne(new Score(name, level, score));
+      await collections.scores.insertOne(data);
     }
     res.status(200).send({ error: false, msg: "Inserted Score!" });
   } catch (error) {
