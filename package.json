@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@pixi/react": "^7.1.0",
+    "crypto-js": "^4.1.1",
     "framer-motion": "^10.15.1",
     "hmac-auth-express": "^8.3.4",
     "pixi.js": "^7.2.4",
@@ -22,6 +23,7 @@
     "robust-point-in-polygon": "^1.0.3"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@types/react-modal": "^3.16.0",

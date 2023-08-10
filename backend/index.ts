@@ -35,14 +35,6 @@ connectToDatabase()
           info: error.message,
         });
       }
-    
-      // alternative: check by error code
-      if (error.code === "ERR_HMAC_AUTH_INVALID") {
-        res.status(401).json({
-          error: "Invalid request",
-          info: error.message,
-        });
-      }
       next();
     });
     app.listen(port, () => {

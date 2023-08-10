@@ -1,5 +1,6 @@
 import { Point } from "pixi.js";
 import { vec2 } from "./Types";
+import Crypto from "crypto-js";
 import robustPointInPolygon from "robust-point-in-polygon";
 
 export function makeCopy(points: Point[], screen: vec2) {
@@ -132,6 +133,11 @@ export async function callAPI(
   body: object = {},
 ) {
   const API = 'https://asteroids-api.notaroomba.xyz'
+  const time = Date.now().toString();
+  const key = JSON.stringify(body);
+  const digest = Crypto.enc.Hex.stringify(Crypto.HmacSHA256(time, key));
+  const hmac = `HMAC ${time}:${digest}`;
+  console.log(hmac)
   return method === 'POST'
     ? await (
         await fetch(API + endpoint, {
@@ -139,7 +145,7 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            time: Math.floor(Date.now()/1000).toString(),
+            Authorization: hmac
           },
           body: JSON.stringify(body),
         })
@@ -150,7 +156,7 @@ export async function callAPI(
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            time: Math.floor(Date.now()/1000).toString(),
+            'Authorization': hmac
           },
         })
       ).json();

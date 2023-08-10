@@ -1,5 +1,4 @@
 import Modal from 'react-modal';
-import { generate } from "hmac-auth-express";
 import { ScoreProp } from '../utils/Types';
 import { useEffect, useState } from 'react';
 import { callAPI } from '../utils/Functions';
