@@ -134,8 +134,8 @@ export async function callAPI(
 ) {
   const API = 'https://asteroids-api.notaroomba.xyz'
   const time = Date.now().toString();
-  const key = JSON.stringify(body);
-  const digest = Crypto.enc.Hex.stringify(Crypto.HmacSHA256(key, 'a'));
+  const data = JSON.stringify(body);
+  const digest = Crypto.enc.Hex.stringify(Crypto.HmacSHA256(time+method+endpoint+Crypto.MD5(data).toString(), Math.floor(Date.now()/60000).toString()));
   const hmac = `HMAC ${time}:${digest}`;
   console.log(hmac)
   return method === 'POST'

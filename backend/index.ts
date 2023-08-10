@@ -12,8 +12,7 @@ export const corsOptions: CorsOptions = {
 }
 
 const genSecret = async (req: Request) => {
-  console.log(req)
-  return 'a'
+  return req?Math.floor(Date.now()/60000).toString():''
 };
 
 connectToDatabase()
