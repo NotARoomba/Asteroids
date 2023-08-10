@@ -8,9 +8,8 @@ const app = express();
 const port = 3001;
 
 export const corsOptions: CorsOptions = {
-  origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz', 'https://localhost:5173'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true // enable set cookie
+  origin: ['https://asteroids.notaroomba.xyz', 'http://asteroids.notaroomba.xyz', 'https://localhost:5173', 'https://localhost'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }
 
 const genSecret = async (req: Request) => {
