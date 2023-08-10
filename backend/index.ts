@@ -12,9 +12,9 @@ export const corsOptions: CorsOptions = {
 }
 
 const genSecret = async (req: Request) => {
-  if (!req.headers.date) return ''
-  console.log(req.headers)
-  return new Date(req.headers.date).getTime().toString()
+  if (!req.body.time) return ''
+  console.log(req.body)
+  return new Date(req.body.time).getTime().toString()
 };
 
 connectToDatabase()
