@@ -8,7 +8,7 @@ export const scoresRouter = express.Router();
 
 scoresRouter.use(express.json());
 
-scoresRouter.get("/", cors(corsOptions),  async (req: Request, res: Response) => {
+scoresRouter.get("/", cors<Request>(corsOptions),  async (req: Request, res: Response) => {
   try {
     let scores: Score[] = [];
     if (collections.scores) {
