@@ -12,7 +12,7 @@ export default function GameOver({
   closeModal: () => void;
   curData: ScoreProp;
 }) {
-  const [data, setData] = useState<ScoreProp[]>();
+  const [data, setData] = useState<ScoreProp[]>([]);
   const [hs, setHS] = useState(false);
   const [n, setN] = useState("");
   const [hsd, setHSD] = useState(false);
@@ -132,7 +132,7 @@ export default function GameOver({
           </tbody>
         </table>
       </div>
-      {hs && !hsd ? (
+      {(hs && !hsd) || data.length==0 ? (
         <></>
       ) : (
         <>
