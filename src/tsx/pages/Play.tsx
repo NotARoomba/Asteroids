@@ -47,7 +47,8 @@ export default function Play() {
         Score: {score}
       </p>
       <p className="absolute top-5 left-1/2 transform -translate-x-1/2 text-sm text-center w-2/3 break-word text-neutral-300">
-        Use [W or ArrowUp] to go forward, [A or ArrowLeft, D or ArrowRight] to steer, and [Space] to shoot!
+        Use [W or ArrowUp] to go forward, [A or ArrowLeft, D or ArrowRight] to
+        steer, and [Space] to shoot!
       </p>
       <p className="absolute top-0 right-0 p-5 text-3xl text-neutral-300 bg-transparent">
         Level: {level}

@@ -4,6 +4,7 @@ import { useWindowDimension } from "../utils/useWindowDimension";
 import Game from "../objects/Game.js";
 import Transitions from "../utils/Transitions.js";
 import { vec2 } from "../utils/Types.js";
+import Credits from "../objects/Credits.js";
 
 export default function Home() {
   const [width, height] = useWindowDimension();
@@ -42,6 +43,7 @@ export default function Home() {
           Leaderboard
         </Link>
       </div>
+      <Credits />
     </Transitions>
   );
 }
