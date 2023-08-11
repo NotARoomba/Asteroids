@@ -29,7 +29,7 @@ export default function Play() {
   const closeGameModal = () => {
     setGameModal(false);
   };
-  if (!isMobile)
+  if (isMobile)
     return (
       <div className="flex items-center flex-col text-neutral-200 justify-center m-auto h-screen">
         <p className="animate-colorpulse">Mobile is not supported :(</p>
