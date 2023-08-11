@@ -16,6 +16,7 @@ export default function Home() {
         className="absolute -z-50 w-screen h-screen top-0 left-1/2 right-1/2 -translate-x-1/2"
       >
         <Game
+          key={Math.random()}
           count={25}
           screen={new vec2(width, height)}
           player={false}
@@ -30,9 +31,15 @@ export default function Home() {
         </p>
         <Link
           to="/play"
-          className="text-4xl m-auto justify-center align-middle text-center mt-5 py-4 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-50 bg-black"
+          className="text-4xl m-auto justify-center align-middle text-center mt-5 py-4 px-10 mb-5 outline-double outline-4 hover:animate-colorpulse bg-opacity-80 bg-black"
         >
           Play
+        </Link>
+        <Link
+          to="/leaderboard"
+          className="text-4xl m-auto justify-center align-middle text-center mt-5 py-4 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-80 bg-black"
+        >
+          Leaderboard
         </Link>
       </div>
     </Transitions>

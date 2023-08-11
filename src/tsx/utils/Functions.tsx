@@ -165,14 +165,14 @@ export async function callAPI(
       ).json();
 }
 
-export function sortScores(scores: ScoreProp[]) {
-  return scores
-        .sort((a: ScoreProp, b: ScoreProp) => a.score - b.score)
-        .concat(
-          Array(5 - scores.length).fill({
-            name: "Unknown",
-            score: 0,
-            level: 0,
-          }),
-        );
+export function sortScores(scores: ScoreProp[], top: boolean = true) {
+  scores.sort((a: ScoreProp, b: ScoreProp) => b.score - a.score)
+  if (scores.length < 5 && top) scores = scores.concat(
+    Array(5 - scores.length).fill({
+      name: "Unknown",
+      score: 0,
+      level: 0,
+    })
+  )
+  return top?scores.slice(0, 5):scores;
 }

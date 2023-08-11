@@ -29,16 +29,17 @@ export default function Play() {
   };
   return (
     <Transitions>
-      <p className="absolute top-0 left-0 p-5 text-4xl text-neutral-300 bg-transparent">
+      <p className="absolute top-0 left-0 p-5 text-3xl text-neutral-300 bg-transparent">
         Score: {score}
       </p>
-      <p className="absolute top-0 right-0 p-5 text-4xl text-neutral-300 bg-transparent">
+      <p className="absolute top-5 left-1/2 transform -translate-x-1/2 text-sm text-neutral-300">Use [W] to go forward, [A, D] to steer, and [Space] to shoot!</p>
+      <p className="absolute top-0 right-0 p-5 text-3xl text-neutral-300 bg-transparent">
         Level: {level}
       </p>
-      <Stage
+      {level!=-1?<Stage
         width={width}
         height={height}
-        options={{ backgroundColor: 0x000 }}
+        options={{ backgroundColor: 0x000, clearBeforeRender: true }}
         className="absolute -z-50 w-screen h-screen top-0 left-1/2 right-1/2 -translate-x-1/2"
       >
         <Game
@@ -49,7 +50,7 @@ export default function Play() {
           setLevel={sLevel}
           gameOver={gameOver}
         />
-      </Stage>
+      </Stage>:<></>}
       {done ? (
         <GameOver
           modalOpen={gameModal}

@@ -47,7 +47,6 @@ export default function Game({
         setKeys({ ...keys, space: false });
       }
       if (event.key == "w") {
-        console.log(event.key)
         setKeys({ ...keys, forward: false });
       }
       if (event.key == "a") {
@@ -70,11 +69,13 @@ export default function Game({
   }
   useTick((delta) => {
     setRender(render + 1);
-    if (!universe.done) {
+    if (!universe.done || !player) {
+      //stupid react
+      if ((universe.score == 0 && universe.level >= 1 && universe.asteroids.length > 10 && player)||(!player && universe.ship.vel.x!=0)) universe = new Universe(screen);
       if (universe.asteroids.length == 0) {
         universe.level++;
         setLevel(universe.level);
-        for (let i = 0; i < count + universe.level; i++) {
+        for (let i = 0; i < count + (universe.level*2); i++) {
           const ap: vec2 = new vec2(0, 0);
           let size: number = 0;
           do {

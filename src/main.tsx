@@ -5,10 +5,12 @@ import "./css/index.css";
 import Home from "./tsx/pages/Home.js";
 import Play from "./tsx/pages/Play.js";
 import Error from "./tsx/pages/Error.js";
+import Leaderboard from "./tsx/pages/Leaderboard.js";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home />, errorElement: <Error /> },
   { path: "/play", element: <Play />, errorElement: <Error /> },
+  { path: "/leaderboard", element: <Leaderboard />, errorElement: <Error /> },
   { path: "*", element: <Error /> },
 ]);
 

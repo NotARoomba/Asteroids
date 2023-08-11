@@ -13,7 +13,6 @@
     "@pixi/react": "^7.1.0",
     "crypto-js": "^4.1.1",
     "framer-motion": "^10.15.1",
-    "hmac-auth-express": "^8.3.4",
     "pixi.js": "^7.2.4",
     "prettier": "^3.0.1",
     "react": "^18.2.0",
