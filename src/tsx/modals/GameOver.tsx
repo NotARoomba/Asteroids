@@ -46,7 +46,7 @@ export default function GameOver({
     <Modal
       closeTimeoutMS={250}
       isOpen={modalOpen}
-      className="flex flex-col transition-opacity m-auto bg-neutral-800 my-20 w-fit p-2 px-4 text-center outline-none text-neutral-200 rounded opacity-100 outline-double outline-8 outline-white"
+      className="flex flex-col transition-opacity m-auto bg-neutral-800 my-20 w-fit p-2 px-4 text-center outline-none text-neutral-200 opacity-100 outline-double outline-8 outline-white"
       overlayClassName='fixed top-0 left-0 right-0 bottom-0 bg-black opacity-80 transition-opacity'
       ariaHideApp={false}
     >
@@ -90,12 +90,12 @@ export default function GameOver({
       </div>
       {hs && !hsd?<></>:(<><button
               onClick={() => window.location.reload()}
-              className="text-4xl m-auto justify-center align-middle text-center my-5 py-3 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-50 rounded hover:cursor-pointer bg-black"
+              className="text-4xl m-auto justify-center align-middle text-center my-5 py-3 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-50 hover:cursor-pointer bg-black"
           >
               Play Again
           </button><Link
               to="/leaderboard"
-              className="text-4xl m-auto justify-center align-middle text-center py-3 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-50 rounded hover:cursor-pointer bg-black"
+              className="text-4xl m-auto justify-center align-middle text-center mb-2 py-3 px-10 outline-double outline-4 hover:animate-colorpulse bg-opacity-50 hover:cursor-pointer bg-black"
           >
                   Leaderboard
               </Link></>)}

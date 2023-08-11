@@ -5,6 +5,8 @@ import { useWindowDimension } from "../utils/useWindowDimension";
 import Game from "../objects/Game";
 import { vec2 } from "../utils/Types";
 import GameOver from "../modals/GameOver";
+import {isMobile} from 'react-device-detect';
+import { Link } from "react-router-dom";
 
 export default function Play() {
   const [width, height] = useWindowDimension();
@@ -27,6 +29,12 @@ export default function Play() {
   const closeGameModal = () => {
     setGameModal(false);
   };
+  if (isMobile) return <div className="flex items-center flex-col text-neutral-200 justify-center m-auto h-screen"><p className="animate-colorpulse">Mobile is not supported :(</p><Link
+  to="/"
+  className="text-xl justify-center align-middle text-center mt-10 py-2 px-8 outline-double outline-4 hover:animate-colorpulse bg-opacity-90 bg-black"
+>
+  Home
+</Link></div>
   return (
     <Transitions>
       <p className="absolute top-0 left-0 p-5 text-3xl text-neutral-300 bg-transparent">
