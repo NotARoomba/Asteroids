@@ -30,13 +30,13 @@ export default function Game({
       if (event.key == " ") {
         setKeys({ ...keys, space: true });
       }
-      if (event.key == "w") {
+      if (event.key == "w" || event.key == "ArrowUp") {
         setKeys({ ...keys, forward: true });
       }
-      if (event.key == "a") {
+      if (event.key == "a" || event.key == "ArrowLeft") {
         setKeys({ ...keys, left: true });
       }
-      if (event.key == "d") {
+      if (event.key == "d" || event.key == "ArrowRight") {
         setKeys({ ...keys, right: true });
       }
     };
@@ -46,13 +46,13 @@ export default function Game({
       if (event.key == " ") {
         setKeys({ ...keys, space: false });
       }
-      if (event.key == "w") {
+      if (event.key == "w" || event.key == "ArrowUp") {
         setKeys({ ...keys, forward: false });
       }
-      if (event.key == "a") {
+      if (event.key == "a" || event.key == "ArrowLeft") {
         setKeys({ ...keys, left: false });
       }
-      if (event.key == "d") {
+      if (event.key == "d" || event.key == "ArrowRight") {
         setKeys({ ...keys, right: false });
       }
     };
@@ -71,11 +71,18 @@ export default function Game({
     setRender(render + 1);
     if (!universe.done || !player) {
       //stupid react
-      if ((universe.score == 0 && universe.level >= 1 && universe.asteroids.length > 10 && player)||(!player && universe.ship.vel.x!=0)) universe = new Universe(screen);
+      if (
+        (universe.score == 0 &&
+          universe.level >= 1 &&
+          universe.asteroids.length > 10 &&
+          player) ||
+        (!player && universe.ship.vel.x != 0)
+      )
+        universe = new Universe(screen);
       if (universe.asteroids.length == 0) {
         universe.level++;
         setLevel(universe.level);
-        for (let i = 0; i < count + (universe.level*2); i++) {
+        for (let i = 0; i < count + universe.level * 2; i++) {
           const ap: vec2 = new vec2(0, 0);
           let size: number = 0;
           do {

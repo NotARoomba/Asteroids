@@ -21,7 +21,7 @@ scoresRouter.get("/", async (req: Request, res: Response) => {
 });
 scoresRouter.post("/", async (req: Request, res: Response) => {
   const data: Score = req.body;
-  let scores: Score[] = []
+  let scores: Score[] = [];
   try {
     if (collections.scores) {
       await collections.scores.insertOne(data);

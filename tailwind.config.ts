@@ -88,19 +88,19 @@ export default {
           "100%": { "text-shadow": "0 0 rgb(10 32 255)" },
         },
         shake: {
-          '10%, 90%': {
-            transform: 'translate3d(-1px, 0, 0)'
+          "10%, 90%": {
+            transform: "translate3d(-1px, 0, 0)",
           },
-          '20%, 80%': {
-            transform: 'translate3d(2px, 0, 0)'
+          "20%, 80%": {
+            transform: "translate3d(2px, 0, 0)",
           },
-          '30%, 50%, 70%': {
-            transform: 'translate3d(-4px, 0, 0)'
+          "30%, 50%, 70%": {
+            transform: "translate3d(-4px, 0, 0)",
           },
-          '40%, 60%': {
-            transform: 'translate3d(4px, 0, 0)'
-          }
-        }
+          "40%, 60%": {
+            transform: "translate3d(4px, 0, 0)",
+          },
+        },
       },
       animation: {
         bouncepulse: "bouncepulse 12s ease-in-out infinite alternate",
