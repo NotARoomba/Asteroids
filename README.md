@@ -1,3 +1,3 @@
 # Asteroids
 
-Originally a C++ asteroids clone, it has now bee ported to web.
+Originally a C++ asteroids clone, it has now been ported to web.
