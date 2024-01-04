@@ -9,8 +9,8 @@ const port = 3001;
 
 export const corsOptions: CorsOptions = {
   origin: [
-    "https://asteroids.notaroomba.xyz",
-    "http://asteroids.notaroomba.xyz",
+    "https://asteroids.notaroomba.dev",
+    "http://asteroids.notaroomba.dev",
     "http://localhost:5173",
     "http://localhost",
   ],

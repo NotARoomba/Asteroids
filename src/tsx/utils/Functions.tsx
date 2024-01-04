@@ -131,7 +131,7 @@ export async function callAPI(
   method: string,
   body: object = {},
 ) {
-  const API = "https://asteroids-api.notaroomba.xyz";
+  const API = "https://asteroids-api.notaroomba.dev";
   const time = Date.now().toString();
   const data = JSON.stringify(body);
   const digest = Crypto.enc.Hex.stringify(
