@@ -1,22 +1,34 @@
 import { useEffect, useState } from "react";
 import { callAPI, sortScores } from "../utils/Functions";
-import Transitions from "../utils/Transitions";
-import { ScoreProp, vec2 } from "../utils/Types";
-import { Stage } from "@pixi/react";
-import Game from "../objects/Game";
-import { useWindowDimension } from "../utils/useWindowDimension";
+import Transitions from "../components/effects/Transitions";
+import { GAMES, HighScoreProp, STATUS_CODES } from "../utils/Types";
 import { Link } from "react-router-dom";
+import LoadingScreen from "../components/effects/LoadingScreen";
+import Stars from "../components/effects/Stars";
+import AlertModal from "../components/modals/AlertModal";
 
 export default function Leaderboard() {
-  const [scores, setScores] = useState<ScoreProp[]>();
-  const [width, height] = useWindowDimension();
+  const [loading, setLoading] = useState(true);
+  const [scores, setScores] = useState<HighScoreProp[]>();
+  const [alertModal, setAlertModal] = useState(false);
+  const [alertMsg, setAlertMsg] = useState<string[]>(["", ""]);
+  const setAlert = (msg: string, title?: string) => {
+    title ? setAlertMsg([title, msg]) : setAlertMsg(["Error", msg]);
+    setAlertModal(true);
+  };
   useEffect(() => {
-    callAPI("/scores", "GET").then((res: { scores: ScoreProp[] }) => {
-      setScores(sortScores(res.scores, false));
+    callAPI(`/games/${GAMES.ASTEROIDS}/highscores`, "GET").then((res) => {
+      if (res.status !== STATUS_CODES.SUCCESS) {
+        setLoading(false);
+        return setAlert("There was an error fetching the highscores!");
+      }
+      setScores(sortScores(res.highscores));
+      setLoading(false);
     });
   }, []);
   return (
     <Transitions>
+      <Stars />
       <div className="flex flex-col text-neutral-300 justify-center">
         <p className="text-2xl sm:text-4xl w-min md:w-max md:text-4xl mt-8 align-middle justify-center m-auto mb-10 py-2 px-8 bg-black rounded animate-colorpulse bg-opacity-90">
           High Score Leaderboard
@@ -41,28 +53,20 @@ export default function Leaderboard() {
                 <tr key={i} className="py-8 text-center break-words">
                   <td className="py-2">{i + 1}</td>
                   <td>{score.score}</td>
-                  <td>{score.name}</td>
+                  <td>{score.username}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-      <Stage
-        width={width}
-        height={height}
-        options={{ backgroundColor: 0x000 }}
-        className="absolute -z-50 w-screen h-screen top-0 left-1/2 right-1/2 -translate-x-1/2"
-      >
-        <Game
-          count={25}
-          screen={new vec2(width, height)}
-          player={false}
-          setScore={() => 1}
-          setLevel={() => 1}
-          gameOver={() => 1}
-        />
-      </Stage>
+      <AlertModal
+        title={alertMsg[0]}
+        text={alertMsg[1]}
+        isOpen={alertModal}
+        setIsOpen={setAlertModal}
+      />
+      <LoadingScreen loading={loading} />
     </Transitions>
   );
 }

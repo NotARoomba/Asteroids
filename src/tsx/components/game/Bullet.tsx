@@ -1,6 +1,6 @@
 import { Point, Graphics as G } from "pixi.js";
 import { Graphics } from "@pixi/react";
-import { vec2 } from "../utils/Types";
+import { vec2 } from "../../utils/Types";
 import GameObject from "./GameObject";
 
 export default class Bullet extends GameObject {

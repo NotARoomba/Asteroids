@@ -101,11 +101,21 @@ export default {
             transform: "translate3d(4px, 0, 0)",
           },
         },
+        show: {
+          "0%": { opacity: "0", visibility: "visible" },
+          "100%": { opacity: "100", zIndex: "50" },
+        },
+        hide: {
+          "0%": { opacity: "100" },
+          "100%": { opacity: "0", display: "none", zIndex: "-50" },
+        },
       },
       animation: {
         bouncepulse: "bouncepulse 12s ease-in-out infinite alternate",
         colorpulse: "colorpulse 6s ease-in-out infinite alternate",
         shake: "shake 1s cubic-bezier(.36,.07,.19,.97) both",
+        show: "show 500ms ease forwards",
+        hide: "hide 500ms ease forwards",
       },
     },
   },

@@ -1,8 +1,8 @@
 import { Point, Graphics as G } from "pixi.js";
 import { Graphics } from "@pixi/react";
-import { Universe, vec2 } from "../utils/Types";
+import { Universe, vec2 } from "../../utils/Types";
 import GameObject from "./GameObject";
-import { makeCopy, rotatePointsAndScale } from "../utils/Functions";
+import { makeCopy, rotatePointsAndScale } from "../../utils/Functions";
 
 export default class Player extends GameObject {
   isMoving: boolean = false;

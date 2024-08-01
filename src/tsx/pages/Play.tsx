@@ -1,10 +1,10 @@
 import { useState } from "react";
-import Transitions from "../utils/Transitions";
+import Transitions from "../components/effects/Transitions";
 import { Stage } from "@pixi/react";
 import { useWindowDimension } from "../utils/useWindowDimension";
-import Game from "../objects/Game";
+import Game from "../components/game/Game";
 import { vec2 } from "../utils/Types";
-import GameOver from "../modals/GameOver";
+import GameOver from "../components/modals/GameOver";
 import { isMobile } from "react-device-detect";
 import { Link } from "react-router-dom";
 
@@ -76,7 +76,7 @@ export default function Play() {
         <GameOver
           modalOpen={gameModal}
           closeModal={closeGameModal}
-          curData={{ name: "", level, score }}
+          curData={{ level, score }}
         />
       ) : (
         <></>

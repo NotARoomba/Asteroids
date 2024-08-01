@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Graphics, useTick } from "@pixi/react";
-import { GameProps, KeyProp, Universe, vec2 } from "../utils/Types";
+import { GameProps, KeyProp, Universe, vec2 } from "../../utils/Types";
 
 import Asteroid from "./Asteroid";
 import Bullet from "./Bullet";
@@ -17,6 +17,7 @@ export default function Game({
   setLevel,
   setScore,
   gameOver,
+  background,
 }: GameProps) {
   const [keys, setKeys] = useState<KeyProp>({
     forward: false,
@@ -56,8 +57,10 @@ export default function Game({
         setKeys({ ...keys, right: false });
       }
     };
-    document.onkeydown = handleKeyDown;
-    document.onkeyup = handleKeyUp;
+    if (!background) {
+      document.onkeydown = handleKeyDown;
+      document.onkeyup = handleKeyUp;
+    }
     return () => {
       document.onkeydown = null;
       document.onkeyup = null;

@@ -1,7 +1,7 @@
 import { Point, Graphics as G, Rectangle } from "pixi.js";
 import { Graphics } from "@pixi/react";
-import { Universe, vec2 } from "../utils/Types";
-import { makeCopy, rotatePointsAndScale } from "../utils/Functions";
+import { Universe, vec2 } from "../../utils/Types";
+import { makeCopy, rotatePointsAndScale } from "../../utils/Functions";
 
 export default class GameObject {
   pos: vec2;

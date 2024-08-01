@@ -1,5 +1,5 @@
-import { pointIsInPoly } from "../utils/Functions";
-import { Universe, vec2 } from "../utils/Types";
+import { pointIsInPoly } from "../../utils/Functions";
+import { Universe, vec2 } from "../../utils/Types";
 import GameObject from "./GameObject";
 
 export default class Asteroid extends GameObject {
